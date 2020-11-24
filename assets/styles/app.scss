@@ -1,0 +1,17 @@
+$theme-colors: (
+  "dark": #51068C,
+  "light": #AE9FB9,
+  "background": #FFFFFF
+);
+
+nav {
+  background-color: #51068C;
+}
+
+h1 {
+  color: #AE9FB9;
+}
+
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
