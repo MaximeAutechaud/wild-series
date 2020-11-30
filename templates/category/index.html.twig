@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Our Categories{% endblock %}
+
+{% block body %}
+    <h3>Select your category</h3>
+    {% for category in categories %}
+        <div>
+            <ul>
+                <li>
+                    <a href="{{ path("category_show", {categoryName: category.name}) }}">{{ category.name }}</a>
+                </li>
+            </ul>
+        </div>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{% endblock %}
+{% block body %}
+    {% for serie in series %}
+        <div class="media">
+            <img class="align-self-start mr-3" src="{{ serie.poster }}" alt="{{ serie.title }} poster">
+            <div>
+                <h1 class="mt-0"><a href="{{ path('program_show', {id : serie.id}) }}">{{ serie.id }} / {{ serie.title }}</a></h1>
+                <p>{{ serie.summary }}</p>
+                <p>Catégorie : {{ serie.category.name }}</p>
+                <a href="{{ path('category_index') }}">
+                    Retour à la liste des catégories
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
