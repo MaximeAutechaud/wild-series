@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Episode;
 use App\Entity\Program;
+use App\Entity\Season;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,20 +35,92 @@ class ProgramController extends AbstractController
     /**
      * @return Response
      * @Route ("/show/{id<^[0-9]+$>}", requirements={"id"="\d+"}, methods={"GET"}, name="show")
-     * @param int $id
+     * @param Program $program
      */
-    public function show(int $id): Response
+    public function show(Program $program): Response
     {
-        $program = $this->getDoctrine()
-            ->getRepository(Program::class)
-            ->findOneBy(['id'=> $id]);
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with id : ' . $program->getId() . ' found in program\'s table.'
+            );
+        }
+        $seasons = $this->getDoctrine()
+            ->getRepository(Season::class)
+            ->findAll();
+
+        return $this->render('program/show.html.twig', [
+            'program' => $program,
+            'seasons' => $seasons
+        ]);
+    }
+
+    /**
+     * @param Program $program
+     * @param Season $season
+     * @Route("/{programId}/seasons/{seasonId}", methods={"GET"}, name="season_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
+     * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
+     * @return Response
+     */
+    public function showSeason(Program $program, Season $season): Response
+    {
+        $episodes = $this->getDoctrine()
+            ->getRepository(Episode::class)
+            ->findOneBy(['season' => $season->getId()]);
 
         if (!$program) {
             throw $this->createNotFoundException(
-                'No program with id : ' . $id . ' found in program\'s table.'
+                'There is no such ' . $program->getId()
             );
         }
-        return $this->render('program/show.html.twig', ['program' => $program]);
+        if (!$season) {
+            throw $this->createNotFoundException(
+                'There is no such ' . $season->getId()
+            );
+        }
+        if (!$episodes) {
+            throw $this->createNotFoundException(
+                'There is no episode'
+            );
+        }
+        return $this->render('program/season_show.html.twig', [
+            'program' => $program,
+            'season' => $season,
+            'episodes' => $episodes
+        ]);
+    }
 
+    /**
+     * @Route("/{programId}/seasons/{seasonId}/episodes/{episodeId}", methods={"GET"}, name="episode_show")
+     * @ParamConverter ("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
+     * @ParamConverter ("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
+     * @ParamConverter ("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})
+     * @param Program $program
+     * @param Season $season
+     * @param Episode $episode
+     * @return Response
+     */
+    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    {
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'There is no such program as ' . $program->getId()
+            );
+        }
+        if (!$season) {
+            throw $this->createNotFoundException(
+                'There is no such season as ' . $season->getId()
+            );
+        }
+        if (!$episode) {
+            throw $this->createNotFoundException(
+                'There is no episode'
+            );
+        }
+        return $this->render('program/episode_show.html.twig', [
+            'program' => $program,
+            'season' => $season,
+            'episode' => $episode
+        ]);
     }
 }
