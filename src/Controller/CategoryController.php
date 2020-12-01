@@ -33,6 +33,7 @@ class CategoryController extends AbstractController
     /**
      * @return Response
      * @Route ("/new", name="new")
+     * @param Request $request
      */
     public function new(Request $request): Response
     {
