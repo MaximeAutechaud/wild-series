@@ -66,7 +66,7 @@ class ProgramController extends AbstractController
     {
         $episodes = $this->getDoctrine()
             ->getRepository(Episode::class)
-            ->findOneBy(['season' => $season->getId()]);
+            ->findBy(['season' => $season->getId()]);
 
         if (!$program) {
             throw $this->createNotFoundException(
