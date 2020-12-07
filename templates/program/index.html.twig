@@ -14,7 +14,16 @@
     {% else %}
         Aucune série trouvée.
     {% endfor %}
-    <a href="{{ path('app_index') }}">
-        Retour à l'accueil
-    </a>
+    <div>
+        <div>
+            <a href="{{ path('app_index') }}">
+                Retour à l'accueil
+            </a>
+        </div>
+        <div>
+            <a href="{{ path('program_new') }}">
+                Ajouter une série
+            </a>
+        </div>
+    </div>
 {% endblock %}

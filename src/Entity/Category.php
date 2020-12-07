@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Cassandra\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -20,6 +21,8 @@ class Category
     private $id;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255, maxMessage="La nom possède au maximum {{ limit }} caractères.")
      * @ORM\Column(type="string", length=100)
      */
     private $name;
