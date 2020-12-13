@@ -11,6 +11,8 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class EpisodeFixtures extends Fixture implements DependentFixtureInterface
 {
+    const EPISODE_COUNT = 10;
+
     private $slugify;
 
     public function __construct(Slugify $slugify)
@@ -20,15 +22,16 @@ class EpisodeFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        $faker = Faker\Factory::create('fr_FR');
-        for($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < self::EPISODE_COUNT; $i++) {
+
+            $faker  =  Faker\Factory::create('fr_FR');
             $episode = new Episode();
-            $episode->setTitle($faker->word);
+            $episode->setTitle(($faker->title));
             $slug = $this->slugify->slug($episode->getTitle());
             $episode->setSlug($slug);
-            $episode->setNumber($faker->numberBetween(1, 24));
+            $episode->setNumber($faker->numberBetween(1, 5));
             $episode->setSynopsis($faker->text);
-            $episode->setSeason($this->getReference('season_' . rand(0, 10)));
+            $episode->setSeason($this->getReference('season_' . rand(0, SeasonFixtures::SEASONS_COUNT-1)));
             $manager->persist($episode);
         }
         $manager->flush();

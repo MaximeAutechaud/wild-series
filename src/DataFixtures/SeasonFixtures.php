@@ -12,22 +12,24 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class SeasonFixtures extends Fixture implements DependentFixtureInterface
 {
+    const SEASONS_COUNT = 7;
     public function load(ObjectManager $manager)
     {
-        $faker = Faker\Factory::create('fr_FR');
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < self::SEASONS_COUNT; $i++) {
+
+            $faker  =  Faker\Factory::create('fr_FR');
             $season = new Season();
-            $season->setNumber($faker->numberBetween(1, 10));
-            $season->setYear($faker->year);
-            $season->setDescription($faker->paragraph);
-            $season->setProgram($this->getReference('program_' . rand(0, 4)));
-            $this->addReference('season_' . $i, $season);
+            $season->setNumber($i+1);
+            $season->setDescription($faker->text);
+            $season->setYear(intval($faker->dateTimeThisDecade()->format('Y')));
+            $season->setProgram($this->getReference('program_' . rand(0, count(ProgramFixtures::PROGRAMS)-1)));
             $manager->persist($season);
+            $this->addReference('season_' . $i, $season);
         }
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [ProgramFixtures::class];
     }

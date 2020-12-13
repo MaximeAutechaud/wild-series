@@ -37,6 +37,7 @@ class ProgramController extends AbstractController
 
     /**
      * @param Request $request
+     * @param Slugify $slugify
      * @return Response
      * @Route("/new", name="new")
      */
@@ -60,8 +61,10 @@ class ProgramController extends AbstractController
 
     /**
      * @return Response
-     * @Route ("/show/{id<^[0-9]+$>}", requirements={"id"="\d+"}, methods={"GET"}, name="show")
+     * @Route ("/{programSlug}", methods={"GET"}, name="show")
+     * @ParamConverter ("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
      * @param Program $program
+     * @return Response
      */
     public function show(Program $program): Response
     {
@@ -72,7 +75,7 @@ class ProgramController extends AbstractController
         }
         $seasons = $this->getDoctrine()
             ->getRepository(Season::class)
-            ->findAll();
+            ->findBy(['program' => $program]);
 
         return $this->render('program/show.html.twig', [
             'program' => $program,
@@ -83,8 +86,8 @@ class ProgramController extends AbstractController
     /**
      * @param Program $program
      * @param Season $season
-     * @Route("/{programId}/seasons/{seasonId}", methods={"GET"}, name="season_show")
-     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
+     * @Route("/{programSlug}/seasons/{seasonId}", methods={"GET"}, name="season_show")
+     * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
      * @ParamConverter("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
      * @return Response
      */
@@ -92,7 +95,7 @@ class ProgramController extends AbstractController
     {
         $episodes = $this->getDoctrine()
             ->getRepository(Episode::class)
-            ->findBy(['season' => $season->getId()]);
+            ->findOneBy(['season' => $season->getId()]);
 
         if (!$program) {
             throw $this->createNotFoundException(
@@ -117,8 +120,8 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{programId}/seasons/{seasonId}/episodes/{episodeId}", methods={"GET"}, name="episode_show")
-     * @ParamConverter ("program", class="App\Entity\Program", options={"mapping": {"programId": "id"}})
+     * @Route("/{programSlug}/seasons/{seasonId}/episodes/{episodeId}", methods={"GET"}, name="episode_show")
+     * @ParamConverter ("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
      * @ParamConverter ("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
      * @ParamConverter ("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})
      * @param Program $program

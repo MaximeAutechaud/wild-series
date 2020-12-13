@@ -11,11 +11,11 @@ class CategoryFixtures extends Fixture
     const CATEGORIES = [
         'Action',
         'Aventure',
+        'Animation',
         'Comédie',
-        'SF',
-        'Horreur'
+        'Fantasy',
+        'Horreur',
     ];
-
     public function load(ObjectManager $manager)
     {
         foreach (self::CATEGORIES as $key => $categoryName) {
@@ -25,6 +25,5 @@ class CategoryFixtures extends Fixture
             $this->addReference('category_' . $key, $category);
         }
         $manager->flush();
-        // TODO: Implement load() method.
     }
 }
