@@ -1,0 +1,13 @@
+{% extends 'email_layout.html.twig' %}
+
+{% block body %}
+    <h1>{{ episode.title }} vient d'être publié.</h1>
+    <p>Il s'agit de l'épisode {{ episode.number }} de la saison {{ episode.season.number }} de la série {{ episode.season.program.title }} dont voici le synopsis :<br>
+    {{ episode.synopsis }}</p>
+
+    <span>
+        <p> Pour voir l'épisode c'est
+            <a href="http://127.0.0.1:8000/programs/{{ episode.season.program.slug }}/seasons/{{ episode.season.id }}/episodes/{{ episode.id }}"> ICI !</a>
+        </p>
+    </span>
+{% endblock %}
