@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Program;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,6 +35,7 @@ class CategoryController extends AbstractController
      * @return Response
      * @Route ("/new", name="new")
      * @param Request $request
+     * @IsGranted("ROLE_ADMIN")
      */
     public function new(Request $request): Response
     {
