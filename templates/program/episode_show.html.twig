@@ -9,7 +9,7 @@
 
      <h3>Commentaires</h3>
     <div style="display: inline-block">
-    {% for comment in comments %}
+    {% for comment in comments|reverse %}
         <div>
             <h4>{{ comment.author.email }}</h4>
             <p>{{ comment.comment }}</p>
