@@ -19,18 +19,27 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Series
+                    <a href="{{ path('category_index') }}" class="nav-link" href="#">Categories
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">List</a>
+                <li class="nav-item active">
+                    <a href="{{ path('program_index') }}" class="nav-link" href="#">Programs
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{{ path('actor_index') }}" class="nav-link" href="#">Actors
+                        <span class="sr-only">(current)</span>
+                    </a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            {% if app.user %}
+                {{ app.user.email }}
+                <a href="{{ path('app_logout') }}"> Se déconnecter</a>
+            {% else %}
+                <a href="{{ path('app_login') }}"> Se connecter</a>
+            {% endif %}
         </div>
     </nav>
         {% block body %}{% endblock %}

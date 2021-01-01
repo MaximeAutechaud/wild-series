@@ -43,6 +43,11 @@ class Episode
      */
     private $slug;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Comment::class, inversedBy="episode")
+     */
+    private $comment;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +109,18 @@ class Episode
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getComment(): ?Comment
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?Comment $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

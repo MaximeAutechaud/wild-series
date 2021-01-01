@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Episode;
 use App\Entity\Program;
 use App\Entity\Season;
+use App\Form\CommentType;
 use App\Service\Slugify;
 use App\Form\ProgramType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -128,16 +130,17 @@ class ProgramController extends AbstractController
     }
 
     /**
-     * @Route("/{programSlug}/seasons/{seasonId}/episodes/{episodeId}", methods={"GET"}, name="episode_show")
+     * @Route("/{programSlug}/seasons/{seasonId}/episodes/{episodeId}", name="episode_show")
      * @ParamConverter ("program", class="App\Entity\Program", options={"mapping": {"programSlug": "slug"}})
      * @ParamConverter ("season", class="App\Entity\Season", options={"mapping": {"seasonId": "id"}})
      * @ParamConverter ("episode", class="App\Entity\Episode", options={"mapping": {"episodeId": "id"}})
      * @param Program $program
      * @param Season $season
      * @param Episode $episode
+     * @param Request $request
      * @return Response
      */
-    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    public function showEpisode(Program $program, Season $season, Episode $episode, Request $request): Response
     {
         if (!$program) {
             throw $this->createNotFoundException(
@@ -154,10 +157,31 @@ class ProgramController extends AbstractController
                 'There is no episode'
             );
         }
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $comment->setEpisode($episode);
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+            $user = $this->getUser();
+
+            $comment->setAuthor($user);
+            $em->persist($comment);
+            $em->flush();
+        }
+
+        $comments = $this->getDoctrine()->getRepository(Comment::class)->findBy(['episode' => $episode]);
+
         return $this->render('program/episode_show.html.twig', [
             'program' => $program,
             'season' => $season,
-            'episode' => $episode
+            'episode' => $episode,
+            'comment' => $comment,
+            'comments' => $comments,
+            'form' => $form->createView(),
         ]);
     }
 }
