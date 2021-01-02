@@ -1,7 +1,4 @@
 security:
-    role_hierarchy:
-        ROLE_CONTRIBUTOR: ROLE_USER
-        ROLE_ADMIN: ROLE_CONTRIBUTOR
     encoders:
         App\Entity\User:
             algorithm: auto
@@ -35,8 +32,16 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
+    role_hierarchy:
+        ROLE_CONTRIBUTOR: ROLE_USER
+        ROLE_ADMIN: ROLE_CONTRIBUTOR
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/programs/new, roles: ROLE_CONTRIBUTOR }
         - { path: ^/programs/[a-z-]+/edit, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/season, roles: ROLE_ADMIN }
+        - { path: ^/episode, roles: ROLE_ADMIN }
+        - { path: ^/my-profile, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_ADMIN }

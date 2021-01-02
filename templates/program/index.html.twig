@@ -4,19 +4,24 @@
     All Programs
 {% endblock %}
 {% block body %}
-    <h1>Toutes les séries de la table program :</h1>
-    {% for program in programs %}
-        <div>
-            <h4>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h4>
-            <p>{{ program.summary }}</p>
-            <a href="{{ path("program_show", {programSlug: program.slug}) }}">Voir la fiche</a>
-            {% if is_granted("ROLE_ADMIN") or app.user == program.owner %}
-                <a href="{{ path('program_edit', {'slug': program.slug}) }}">Editer</a>
-            {% endif %}
-        </div>
+    <h1>Toutes les séries</h1>
+    <div class="container-fluid" style="display: flex; flex-wrap: wrap">
+        {% for program in programs %}
+            <div class="card col-4">
+                <img style="padding: 10px" src="{{ program.poster }}" class="card-img-top" alt="{{ program.title }}">
+                <h4>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h4>
+                <div class="card-body">
+                    <p class="card-text">{{program.summary}}</p>
+                    <a href="{{ path("program_show", {programSlug: program.slug}) }}">Voir la fiche</a>
+                    {% if is_granted("ROLE_ADMIN") or app.user == program.owner %}
+                        <a href="{{ path('program_edit', {'slug': program.slug}) }}">Editer</a>
+                    {% endif %}
+                </div>
+            </div>
     {% else %}
         Aucune série trouvée.
     {% endfor %}
+    </div>
     <div>
         <div>
             <a href="{{ path('app_index') }}">
