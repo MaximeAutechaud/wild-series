@@ -5,6 +5,12 @@
 {% endblock %}
 {% block body %}
     <h1>Toutes les séries</h1>
+    <div style="max-width: 66%; margin: auto">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button>Search</button>
+        {{ form_end(form) }}
+    </div>
     <div class="container-fluid" style="display: flex; flex-wrap: wrap">
         {% for program in programs %}
             <div class="card col-4">

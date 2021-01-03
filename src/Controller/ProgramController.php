@@ -7,7 +7,9 @@ use App\Entity\Episode;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Form\CommentType;
+use App\Form\SearchProgramType;
 use App\Form\SeasonType;
+use App\Repository\ProgramRepository;
 use App\Service\Slugify;
 use App\Form\ProgramType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,16 +31,26 @@ class ProgramController extends AbstractController
 {
     /**
      * @Route("/", name="index")
+     * @param Request $request
+     * @param ProgramRepository $programRepository
+     * @return Response
      */
-    public function index(): Response
+    public function index(Request $request, ProgramRepository $programRepository): Response
     {
-        $programs = $this->getDoctrine()
-            ->getRepository(Program::class)
-            ->findAll();
+        $form = $this->createForm(SearchProgramType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->getData()['search'];
+            $programs = $programRepository->findLikeNameOrLikeActor($search);
+        } else {
+            $programs = $programRepository->findAll();
+        }
 
         return $this->render('program/index.html.twig', [
             'website' => 'Wild Series',
-            'programs' => $programs
+            'programs' => $programs,
+            'form' => $form->createView(),
         ]);
     }
 
