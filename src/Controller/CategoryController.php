@@ -46,6 +46,7 @@ class CategoryController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($category);
             $entityManager->flush();
+            $this->addFlash('success', 'La catégorie ' . $category->getName() . ' a bien été ajoutée');
             return $this->redirectToRoute('category_index');
         }
         return $this->render('category/new.html.twig', [
@@ -69,7 +70,7 @@ class CategoryController extends AbstractController
                 'Error 404 : there is no category such as : "' . $categoryName . '"'
             );
         }
-        $seriesByCategory = $this->getDoctrine()
+        $programsByCategory = $this->getDoctrine()
             ->getRepository(Program::class)
             ->findBy(['category' => $category->getId()],
                 ['id' => 'DESC'],
@@ -77,7 +78,7 @@ class CategoryController extends AbstractController
             );
 
         return $this->render('category/show.html.twig', [
-            'series' => $seriesByCategory
+            'programs' => $programsByCategory
         ]);
     }
 

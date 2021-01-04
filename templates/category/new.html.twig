@@ -1,14 +1,15 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {{ form_start(form) }}
-    <div class="my-custom-class-for-errors">
-        {{ form_errors(form) }}
-    </div>
-
-    <div class="row">
+    <div style="margin: 20px">
+        {{ form_start(form) }}
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+        <div class="row">
         {{ form_widget(form) }}
         <input type="submit" value="Add category">
+        </div>
+        {{ form_end(form) }}
     </div>
-    {{ form_end(form) }}
 {% endblock %}

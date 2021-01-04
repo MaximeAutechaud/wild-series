@@ -2,17 +2,22 @@
 
 {% block title %}{% endblock %}
 {% block body %}
-    {% for serie in series %}
+    {% for program in programs %}
         <div class="media">
-            <img class="align-self-start mr-3" src="{{ serie.poster }}" alt="{{ serie.title }} poster">
+            <img class="align-self-start mr-3" src="{{ program.poster }}" alt="{{ program.title }} poster">
             <div>
-                <h1 class="mt-0"><a href="{{ path('program_show', {id : serie.id}) }}">{{ serie.id }} / {{ serie.title }}</a></h1>
-                <p>{{ serie.summary }}</p>
-                <p>Catégorie : {{ serie.category.name }}</p>
+                <h1 class="mt-0"><a href="{{ path('program_show', {programSlug: program.slug}) }}">{{ program.id }} / {{ program.title }}</a></h1>
+                <p>{{ program.summary }}</p>
+                <p>Catégorie : {{ program.category.name }}</p>
                 <a href="{{ path('category_index') }}">
                     Retour à la liste des catégories
                 </a>
             </div>
         </div>
+        {% else %}
+            <p>Désolé il n'y a pas encore de série pour cette catégorie</p>
+            <a href="{{ path('category_index') }}">
+                Retour à la liste des catégories
+            </a>
     {% endfor %}
 {% endblock %}

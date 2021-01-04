@@ -58,7 +58,7 @@ class ProgramController extends AbstractController
      * @param Request $request
      * @param Slugify $slugify
      * @return Response
-     * @Route("/new", name="new")
+     * @Route("/new", name="new", methods={"GET", "POST"})
      */
     public function new(Request $request, Slugify $slugify, MailerInterface $mailer): Response
     {
@@ -78,6 +78,7 @@ class ProgramController extends AbstractController
                     ->subject('Une nouvelle série vient d\'être publiée !')
                     ->html($this->renderView('program/newProgramEmail.html.twig', ['program'=> $program]));
             $mailer->send($email);
+            $this->addFlash('success', $program->getTitle() . ' a bien été ajouté !');
             return $this->redirectToRoute('program_index');
         }
         return $this->render('program/new.html.twig', [
@@ -109,7 +110,9 @@ class ProgramController extends AbstractController
             $entityManager->flush();
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('program_show', ['slug' => $program->getSlug()]);
+            $this->addFlash('success', $program->getTitle() . ' a été édité avec succès');
+
+            return $this->redirectToRoute('program_index');
         }
 
         return $this->render('program/new.html.twig', [
@@ -232,6 +235,24 @@ class ProgramController extends AbstractController
             'comments' => $comments,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/{id}", name="delete", methods={"DELETE"})
+     * @param Program $program
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Program $program, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$program->getId(), $request->request->get('_token'))) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($program);
+            $em->flush();
+        }
+        $this->addFlash('danger', $program->getTitle() . " a bien été supprimé !");
+
+        return $this->redirectToRoute('program_index');
     }
 
 
